@@ -15,6 +15,8 @@ build_requires:
 #!/bin/bash -e
 
 mkdir -p $INSTALLROOT
+export GPU_TARGETS=gfx906
+export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 
 cmake "$SOURCEDIR/cmake"                                                              \
       -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                                             \
@@ -24,6 +26,10 @@ cmake "$SOURCEDIR/cmake"                                                        
       -Donnxruntime_BUILD_UNIT_TESTS=OFF                                              \
       -Donnxruntime_PREFER_SYSTEM_LIB=ON                                              \
       -Donnxruntime_BUILD_SHARED_LIB=ON                                               \
+      -Donnxruntime_USE_ROCM=ON                                                       \
+      -Donnxruntime_ROCM_HOME=$ROCM_HOME                                              \
+      -DCMAKE_HIP_COMPILER=$ROCM_HOME/llvm/bin/clang++                                \
+      -D__HIP_PLATFORM_AMD__=1                                                        \
       -DProtobuf_USE_STATIC_LIBS=ON                                                   \
       ${PROTOBUF_ROOT:+-DProtobuf_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf.a}           \
       ${PROTOBUF_ROOT:+-DProtobuf_LITE_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf-lite.a} \
@@ -45,5 +51,7 @@ cat >> "$MODULEFILE" <<EoF
 
 # Our environment
 set ${PKGNAME}_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
-prepend-path ROOT_INCLUDE_PATH \$${PKGNAME}_ROOT/include/onnxruntime
+prepend-path ROOT_INCLUDE_PATH \$${PKGNAME}_ROOT/include
+
 EoF
+
