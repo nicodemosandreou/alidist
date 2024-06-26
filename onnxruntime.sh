@@ -17,8 +17,6 @@ build_requires:
 mkdir -p $INSTALLROOT
 export GPU_TARGETS=gfx906
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
-
-# Set HIP_PATH based on the suggestion from the GitHub issue
 export HIP_PATH=</opt/rocm/hip>
 
 cmake "$SOURCEDIR/cmake"                                                              \
