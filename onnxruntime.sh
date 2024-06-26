@@ -17,7 +17,7 @@ build_requires:
 mkdir -p $INSTALLROOT
 export GPU_TARGETS=gfx906
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
-export HIP_PATH=/opt/rocm/hip
+export ROCM_HOME=/opt/rocm
 
 cmake "$SOURCEDIR/cmake"                                                              \
       -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                                             \
