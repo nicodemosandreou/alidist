@@ -6,12 +6,12 @@ requires:
   - protobuf
   - re2
   - boost
+  - rocm-dev  # Added ROCm as a requirement
 build_requires:
   - CMake
   - alibuild-recipe-tools
   - "Python:(slc|ubuntu)"  # this package builds ONNX, which requires Python
   - "Python-system:(?!slc.*|ubuntu)"
- 
 prepend_path:
   ROOT_INCLUDE_PATH: "$ONNXRUNTIME_ROOT/include/onnxruntime"
 ---
@@ -19,8 +19,8 @@ prepend_path:
 
 mkdir -p $INSTALLROOT
 
-# Assuming ROCm is installed in the default location, adjust if necessary
-export ROCM_PATH=/opt/rocm
+# Export ROCm path
+export ROCM_PATH=/opt/rocm  # Change this to your actual ROCm installation path
 
 cmake "$SOURCEDIR/cmake"                                                              \
       -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                                             \
@@ -30,10 +30,9 @@ cmake "$SOURCEDIR/cmake"                                                        
       -Donnxruntime_BUILD_UNIT_TESTS=OFF                                              \
       -Donnxruntime_PREFER_SYSTEM_LIB=ON                                              \
       -Donnxruntime_BUILD_SHARED_LIB=ON                                               \
-      -Donnxruntime_USE_ROCM=ON                                                       \
-      -DROCM_PATH=$ROCM_PATH                                                          \
-      -Donnxruntime_ROCM_HOME=$ROCM_PATH                                              \
       -DProtobuf_USE_STATIC_LIBS=ON                                                   \
+      -Donnxruntime_USE_ROCM=ON                                                       \
+      -Donnxruntime_ROCM_HOME=$ROCM_PATH                                              \
       ${PROTOBUF_ROOT:+-DProtobuf_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf.a}           \
       ${PROTOBUF_ROOT:+-DProtobuf_LITE_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf-lite.a} \
       ${PROTOBUF_ROOT:+-DProtobuf_PROTOC_LIBRARY=$PROTOBUF_ROOT/lib/libprotoc.a}      \
