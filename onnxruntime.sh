@@ -1,6 +1,6 @@
 package: ONNXRuntime
 version: "%(tag_basename)s"
-tag: main
+tag: v1.18.0
 source: https://github.com/microsoft/onnxruntime
 requires:
   - protobuf
@@ -28,12 +28,14 @@ export LD_LIBRARY_PATH=$ROCM_HOME/lib:$ROCM_HOME/lib64:$LD_LIBRARY_PATH
 export HIP_PLATFORM=hcc
 export GPU_TARGETS=gfx906
 
+
 # Save current LD_LIBRARY_PATH
 OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
 
 # Modify LD_LIBRARY_PATH to prioritize system libraries
 export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:/usr/local/lib:$LD_LIBRARY_PATH
 
+# Configure CMake
 cmake "$SOURCEDIR/cmake"                                                              \
       -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                                             \
       -DCMAKE_BUILD_TYPE=Release                                                      \
@@ -57,9 +59,13 @@ cmake "$SOURCEDIR/cmake"                                                        
       -DCMAKE_HIP_COMPILER=$ROCM_HOME/llvm/bin/clang++                                \
       -D__HIP_PLATFORM_AMD__=1
 
+# Build and install
 cmake --build . -- ${JOBS:+-j$JOBS} install
 
-# Modulefile
+# Restore the original LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$OLD_LD_LIBRARY_PATH
+
+# Create the modulefile
 mkdir -p "$INSTALLROOT/etc/modulefiles"
 MODULEFILE="$INSTALLROOT/etc/modulefiles/$PKGNAME"
 alibuild-generate-module --lib > "$MODULEFILE"
@@ -69,4 +75,3 @@ cat >> "$MODULEFILE" <<EoF
 set ${PKGNAME}_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
 prepend-path ROOT_INCLUDE_PATH \$${PKGNAME}_ROOT/include/onnxruntime
 EoF
-
