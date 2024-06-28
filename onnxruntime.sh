@@ -1,6 +1,6 @@
 package: ONNXRuntime
 version: "%(tag_basename)s"
-tag: v1.16.0
+tag: v1.16.3
 source: https://github.com/microsoft/onnxruntime
 requires:
   - protobuf
