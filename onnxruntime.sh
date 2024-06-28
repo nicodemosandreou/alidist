@@ -6,7 +6,7 @@ requires:
   - protobuf
   - re2
   - boost
-  - rocm-dev  # Added ROCm as a requirement
+ 
 build_requires:
   - CMake
   - alibuild-recipe-tools
