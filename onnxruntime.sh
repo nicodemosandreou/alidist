@@ -28,6 +28,12 @@ export LD_LIBRARY_PATH=$ROCM_HOME/lib:$ROCM_HOME/lib64:$LD_LIBRARY_PATH
 export HIP_PLATFORM=hcc
 export GPU_TARGETS=gfx906
 
+# Save current LD_LIBRARY_PATH
+OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+
+# Modify LD_LIBRARY_PATH to prioritize system libraries
+export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:/usr/local/lib:$LD_LIBRARY_PATH
+
 cmake "$SOURCEDIR/cmake"                                                              \
       -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                                             \
       -DCMAKE_BUILD_TYPE=Release                                                      \
