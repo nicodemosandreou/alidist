@@ -32,10 +32,9 @@ export GPU_TARGETS=gfx906
 # Save current LD_LIBRARY_PATH
 OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
 
-# Modify LD_LIBRARY_PATH to prioritize system libraries
-export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:/usr/local/lib:$LD_LIBRARY_PATH
+# Temporarily remove ROCm's libstdc++.so.6 from LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$(echo $LD_LIBRARY_PATH | tr ':' '\n' | grep -v "$ROCM_HOME/lib" | tr '\n' ':')
 
-# Configure CMake
 cmake "$SOURCEDIR/cmake"                                                              \
       -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                                             \
       -DCMAKE_BUILD_TYPE=Release                                                      \
@@ -59,13 +58,12 @@ cmake "$SOURCEDIR/cmake"                                                        
       -DCMAKE_HIP_COMPILER=$ROCM_HOME/llvm/bin/clang++                                \
       -D__HIP_PLATFORM_AMD__=1
 
-# Build and install
 cmake --build . -- ${JOBS:+-j$JOBS} install
 
 # Restore the original LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=$OLD_LD_LIBRARY_PATH
 
-# Create the modulefile
+# Modulefile
 mkdir -p "$INSTALLROOT/etc/modulefiles"
 MODULEFILE="$INSTALLROOT/etc/modulefiles/$PKGNAME"
 alibuild-generate-module --lib > "$MODULEFILE"
