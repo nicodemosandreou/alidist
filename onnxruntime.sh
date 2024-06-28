@@ -1,6 +1,6 @@
 package: ONNXRuntime
 version: "%(tag_basename)s"
-tag: v1.16.3
+tag: main
 source: https://github.com/microsoft/onnxruntime
 requires:
   - protobuf
@@ -17,7 +17,10 @@ build_requires:
 mkdir -p $INSTALLROOT
 export GPU_TARGETS=gfx906
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
-export ROCM_HOME=/opt/rocm
+
+# Set the environment variables for multi-GPU
+#export ROCM_VISIBLE_DEVICES=0,1,2,3  # adjust according to the number of GPUs available
+#export HIP_VISIBLE_DEVICES=0,1,2,3   # adjust according to the number of GPUs available
 
 cmake "$SOURCEDIR/cmake"                                                              \
       -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                                             \
@@ -28,8 +31,10 @@ cmake "$SOURCEDIR/cmake"                                                        
       -Donnxruntime_PREFER_SYSTEM_LIB=ON                                              \
       -Donnxruntime_BUILD_SHARED_LIB=ON                                               \
       -Donnxruntime_USE_ROCM=ON                                                       \
-      -Donnxruntime_ROCM_HOME=$ROCM_HOME                                              \
-      -DCMAKE_HIP_COMPILER=$ROCM_HOME/llvm/bin/clang++                                \
+      -Donnxruntime_ENABLE_MULTI_GPU=ON                                               \  # Enabled multi-GPU support
+      -Donnxruntime_CUDA_MINIMAL=ON                                                   \
+      -Donnxruntime_ROCM_HOME=/opt/rocm                                               \
+      -DCMAKE_HIP_COMPILER=/opt/rocm/llvm/bin/clang++                                 \
       -D__HIP_PLATFORM_AMD__=1                                                        \
       -DProtobuf_USE_STATIC_LIBS=ON                                                   \
       ${PROTOBUF_ROOT:+-DProtobuf_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf.a}           \
@@ -53,6 +58,5 @@ cat >> "$MODULEFILE" <<EoF
 # Our environment
 set ${PKGNAME}_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
 prepend-path ROOT_INCLUDE_PATH \$${PKGNAME}_ROOT/include
-
 EoF
 
