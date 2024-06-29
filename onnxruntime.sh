@@ -15,12 +15,22 @@ build_requires:
 #!/bin/bash -e
 
 mkdir -p $INSTALLROOT
-export GPU_TARGETS=gfx906
+
+# Set up environment variables for ROCm
+export ROCM_PATH=/opt/rocm
+export ROCM_HOME=$ROCM_PATH
+export PATH=$ROCM_HOME/bin:$PATH
+export PATH=$ROCM_HOME/llvm/bin:$PATH
+export LD_LIBRARY_PATH=$ROCM_HOME/lib:$ROCM_HOME/lib64:$LD_LIBRARY_PATH
+export HIP_PLATFORM=hcc
+export HCC_AMDGPU_TARGET=gfx906  # Target the specific AMD GPU architecture
 export GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 
-# Set the environment variables for multi-GPU
-#export ROCM_VISIBLE_DEVICES=0,1,2,3  # adjust according to the number of GPUs available
-#export HIP_VISIBLE_DEVICES=0,1,2,3   # adjust according to the number of GPUs available
+# Save current LD_LIBRARY_PATH
+OLD_LD_LIBRARY_PATH=$LD_LIBRARY_PATH
+
+# Temporarily remove ROCm's libstdc++.so.6 from LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$(echo $LD_LIBRARY_PATH | tr ':' '\n' | grep -v "$ROCM_HOME/lib" | tr '\n' ':')
 
 cmake "$SOURCEDIR/cmake"                                                              \
       -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                                             \
@@ -31,10 +41,9 @@ cmake "$SOURCEDIR/cmake"                                                        
       -Donnxruntime_PREFER_SYSTEM_LIB=ON                                              \
       -Donnxruntime_BUILD_SHARED_LIB=ON                                               \
       -Donnxruntime_USE_ROCM=ON                                                       \
-      -Donnxruntime_ENABLE_MULTI_GPU=ON                                               \  # Enabled multi-GPU support
       -Donnxruntime_CUDA_MINIMAL=ON                                                   \
-      -Donnxruntime_ROCM_HOME=/opt/rocm                                               \
-      -DCMAKE_HIP_COMPILER=/opt/rocm/llvm/bin/clang++                                 \
+      -Donnxruntime_ROCM_HOME=$ROCM_HOME                                              \
+      -DCMAKE_HIP_COMPILER=$ROCM_HOME/llvm/bin/clang++                                \
       -D__HIP_PLATFORM_AMD__=1                                                        \
       -DProtobuf_USE_STATIC_LIBS=ON                                                   \
       ${PROTOBUF_ROOT:+-DProtobuf_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf.a}           \
@@ -49,6 +58,9 @@ cmake "$SOURCEDIR/cmake"                                                        
 
 cmake --build . -- ${JOBS:+-j$JOBS} install
 
+# Restore the original LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=$OLD_LD_LIBRARY_PATH
+
 # Modulefile
 mkdir -p "$INSTALLROOT/etc/modulefiles"
 MODULEFILE="$INSTALLROOT/etc/modulefiles/$PKGNAME"
@@ -58,5 +70,5 @@ cat >> "$MODULEFILE" <<EoF
 # Our environment
 set ${PKGNAME}_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
 prepend-path ROOT_INCLUDE_PATH \$${PKGNAME}_ROOT/include
+prepend-path LD_LIBRARY_PATH \$${PKGNAME}_ROOT/lib
 EoF
-
