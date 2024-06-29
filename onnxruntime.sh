@@ -53,6 +53,7 @@ cat >> "$MODULEFILE" <<EoF
 # Our environment
 set ${PKGNAME}_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
 prepend-path ROOT_INCLUDE_PATH \$${PKGNAME}_ROOT/include
+prepend-path LD_LIBRARY_PATH \$${PKGNAME}_ROOT/lib
 
 EoF
 
