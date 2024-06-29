@@ -46,8 +46,7 @@ cmake "$SOURCEDIR/cmake"                                                        
       -Donnxruntime_BUILD_SHARED_LIB=ON                                               \
       -DProtobuf_USE_STATIC_LIBS=ON                                                   \
       -Donnxruntime_USE_ROCM=ON                                                       \
-      -Donnxruntime_ROCM_HOME=$ROCM_HOME   
-      -Donnxruntime_USE_CUDA=OFF                                            \
+      -Donnxruntime_ROCM_HOME=$ROCM_HOME                                               \
       ${PROTOBUF_ROOT:+-DProtobuf_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf.a}           \
       ${PROTOBUF_ROOT:+-DProtobuf_LITE_LIBRARY=$PROTOBUF_ROOT/lib/libprotobuf-lite.a} \
       ${PROTOBUF_ROOT:+-DProtobuf_PROTOC_LIBRARY=$PROTOBUF_ROOT/lib/libprotoc.a}      \
