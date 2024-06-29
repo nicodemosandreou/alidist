@@ -1,6 +1,6 @@
 package: ONNXRuntime
 version: "%(tag_basename)s"
-tag: main
+tag: v1.14.1
 source: https://github.com/microsoft/onnxruntime
 requires:
   - protobuf
@@ -40,8 +40,7 @@ cmake "$SOURCEDIR/cmake"                                                        
       -Donnxruntime_BUILD_UNIT_TESTS=OFF                                              \
       -Donnxruntime_PREFER_SYSTEM_LIB=ON                                              \
       -Donnxruntime_BUILD_SHARED_LIB=ON                                               \
-      -Donnxruntime_USE_ROCM=ON                                                       \
-      -Donnxruntime_CUDA_MINIMAL=ON                                                   \
+      -Donnxruntime_USE_ROCM=ON                                                       \                                                  \
       -Donnxruntime_ROCM_HOME=$ROCM_HOME                                              \
       -DCMAKE_HIP_COMPILER=$ROCM_HOME/llvm/bin/clang++                                \
       -D__HIP_PLATFORM_AMD__=1                                                        \
