@@ -1,6 +1,3 @@
-#!/bin/bash -e
-
-# Package metadata
 PACKAGE_NAME="PyTorch"
 PACKAGE_VERSION="2.2.1"
 INSTALLROOT=${INSTALLROOT:-/opt/pytorch}
