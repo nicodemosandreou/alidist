@@ -1,4 +1,4 @@
-Ppackage: PyTorch
+package: PyTorch
 version: "%(tag_basename)s"
 tag: "2.2.1"
 build_requires:
