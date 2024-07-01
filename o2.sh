@@ -1,6 +1,6 @@
 package: O2
 version: "%(tag_basename)s"
-tag: "daily-20240617-0200"
+tag: "daily-20240701-0200"
 requires:
   - abseil
   - arrow
@@ -29,6 +29,7 @@ requires:
   - MLModels
   - KFParticle
   - RapidJSON
+  - PyTorch
 build_requires:
   - abseil
   - GMP
@@ -155,6 +156,12 @@ case $ARCHITECTURE in
     [[ ! $FMT_ROOT ]] && FMT_ROOT=`brew --prefix fmt`
   ;;
 esac
+
+# This is needed for the PyTorch installation
+if command -v rocminfo >/dev/null 2>&1; then
+  export PYTORCH_ROCM_ARCH=gfx906
+  export USE_ROCM=1
+fi
 
 # This affects only PR checkers
 if [[ $ALIBUILD_O2_TESTS ]]; then
