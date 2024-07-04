@@ -156,6 +156,12 @@ case $ARCHITECTURE in
   ;;
 esac
 
+if command -v rocminfo >/dev/null 2>&1; then
+  export JAX_ROCM_ARCH=gfx906
+  export ROCM_HOME=${ROCM_HOME:-/opt/rocm-5.5.0}
+  export TF_ROCM_AMDGPU_TARGETS="gfx906"
+fi
+
 # This affects only PR checkers
 if [[ $ALIBUILD_O2_TESTS ]]; then
   # Impose extra errors.
