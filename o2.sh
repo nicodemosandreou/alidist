@@ -29,6 +29,8 @@ requires:
   - MLModels
   - KFParticle
   - RapidJSON
+  -jax
+  
 build_requires:
   - abseil
   - GMP
@@ -155,12 +157,6 @@ case $ARCHITECTURE in
     [[ ! $FMT_ROOT ]] && FMT_ROOT=`brew --prefix fmt`
   ;;
 esac
-
-if command -v rocminfo >/dev/null 2>&1; then
-  export JAX_ROCM_ARCH=gfx906
-  export ROCM_HOME=${ROCM_HOME:-/opt/rocm-5.5.0}
-  export TF_ROCM_AMDGPU_TARGETS="gfx906"
-fi
 
 # This affects only PR checkers
 if [[ $ALIBUILD_O2_TESTS ]]; then
