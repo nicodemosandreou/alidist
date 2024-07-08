@@ -9,6 +9,7 @@ build_requires:
   - "Python-system:(?!slc.*|ubuntu)"
 
 #!/bin/bash -e
+
 # Ensure installation directory exists
 mkdir -p $INSTALLROOT
 
