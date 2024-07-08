@@ -2,9 +2,11 @@ package: JAX
 version: "%(tag_basename)s"
 tag: v0.4.30
 source: https://github.com/google/jax
-build_requires:
-- alibuild-recipe-tools
 
+build_requires:
+  - alibuild-recipe-tools
+  - "Python:(slc|ubuntu)"  # this package builds ONNX, which requires Python
+  - "Python-system:(?!slc.*|ubuntu)"
 
 # Ensure installation directory exists
 mkdir -p $INSTALLROOT
