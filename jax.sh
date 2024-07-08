@@ -2,38 +2,27 @@ package: JAX
 version: "%(tag_basename)s"
 tag: v0.4.30
 source: https://github.com/google/jax
-requires:
-  - protobuf
-  - re2
-  - boost
-  - python-absl
-  - python-flatbuffers
-  - python-ml-dtypes
-  - python-numpy
-  - python-scipy
-  - miopen
-  - rccl
-  - rocm-hip-runtime
-build_requires:
-  - python-build
-  - python-installer
-  - python-setuptools
-  - python-wheel
-  - bazel
-  - miopen
-  - rccl
-  - rocm-hip-sdk
-  - alibuild-recipe-tools
-  - "Python:(slc|ubuntu)"
-  - "Python-system:(?!slc.*|ubuntu)"
----
-#!/bin/bash -e
 
 # Ensure installation directory exists
 mkdir -p $INSTALLROOT
 
 # Load necessary modules or set environment variables
 module load python/3.8  # Ensure you have the right Python version
+
+# Install Python dependencies
+pip install protobuf re2 boost absl-py flatbuffers ml-dtypes numpy scipy
+
+# System dependencies installation for AlmaLinux/RHEL/CentOS
+sudo dnf install -y miopen-hip rccl rocm-hip-runtime
+
+# Bazel installation (check for the latest version on the official website)
+BAZEL_VERSION="4.0.0"
+wget https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/bazel-${BAZEL_VERSION}-installer-linux-x86_64.sh
+chmod +x bazel-${BAZEL_VERSION}-installer-linux-x86_64.sh
+./bazel-${BAZEL_VERSION}-installer-linux-x86_64.sh --user
+
+# Add Bazel to PATH
+export PATH="$PATH:$HOME/bin"
 
 # Download source code
 wget -O jaxlib.tar.gz https://github.com/google/jax/archive/refs/tags/jaxlib-v0.4.30.tar.gz
