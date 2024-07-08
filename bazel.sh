@@ -1,6 +1,6 @@
 package: bazel
 version: "5.0.0"
-source: https://github.com/bazelbuild/bazel/releases/download/5.0.0/bazel-5.0.0-dist.zip
+source: https://github.com/bazelbuild/bazel/releases/download/5.0.0/bazel-5.0.0-installer-linux-x86_64.sh
 build_requires:
   - "GCC-Toolchain:(?!osx)"
   - alibuild-recipe-tools
@@ -9,24 +9,26 @@ prepend_path:
 ---
 #!/bin/bash -e
 
-# Unzip Bazel
-unzip bazel-5.0.0-dist.zip -d bazel-5.0.0-dist
-cd bazel-5.0.0-dist
+# Define the Bazel version and installation prefix
+BAZEL_VERSION=5.0.0
+INSTALL_PREFIX=$INSTALLROOT
 
-# Build Bazel
-./compile.sh
+# Download the Bazel installer
+curl -LO https://github.com/bazelbuild/bazel/releases/download/${BAZEL_VERSION}/bazel-${BAZEL_VERSION}-installer-linux-x86_64.sh
 
-# Install Bazel
-mkdir -p $INSTALLROOT/bin
-cp output/bazel $INSTALLROOT/bin/
+# Make the installer executable
+chmod +x bazel-${BAZEL_VERSION}-installer-linux-x86_64.sh
+
+# Run the installer
+./bazel-${BAZEL_VERSION}-installer-linux-x86_64.sh --prefix=${INSTALL_PREFIX}
 
 # Create modulefile
-mkdir -p "$INSTALLROOT/etc/modulefiles"
-MODULEFILE="$INSTALLROOT/etc/modulefiles/$PKGNAME"
-alibuild-generate-module --bin > "$MODULEFILE"
-cat >> "$MODULEFILE" <<EoF
+mkdir -p "${INSTALL_PREFIX}/etc/modulefiles"
+MODULEFILE="${INSTALL_PREFIX}/etc/modulefiles/${PKGNAME}"
+alibuild-generate-module --bin > "${MODULEFILE}"
+cat >> "${MODULEFILE}" <<EoF
 
 # Our environment
-set BAZEL_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
+set BAZEL_ROOT \$::env(BASEDIR)/${PKGNAME}/\$version
 prepend-path PATH \$BAZEL_ROOT/bin
 EoF
