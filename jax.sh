@@ -2,6 +2,9 @@ package: JAX
 version: "%(tag_basename)s"
 tag: v0.4.30
 source: https://github.com/google/jax
+requires:
+- alibuild-recipe-tools
+
 
 # Ensure installation directory exists
 mkdir -p $INSTALLROOT
