@@ -8,6 +8,7 @@ build_requires:
   - "Python:(slc|ubuntu)"  # this package builds ONNX, which requires Python
   - "Python-system:(?!slc.*|ubuntu)"
 
+#!/bin/bash
 # Ensure installation directory exists
 mkdir -p $INSTALLROOT
 
@@ -18,7 +19,7 @@ module load python/3.8  # Ensure you have the right Python version
 pip install protobuf re2 boost absl-py flatbuffers ml-dtypes numpy scipy
 
 # System dependencies installation for AlmaLinux/RHEL/CentOS
-sudo dnf install -y miopen-hip rccl rocm-hip-runtime
+sudo yum install -y miopen-hip rccl rocm-hip-runtime
 
 # Bazel installation (check for the latest version on the official website)
 BAZEL_VERSION="4.0.0"
