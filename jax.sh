@@ -8,7 +8,7 @@ build_requires:
   - "Python:(slc|ubuntu)"  # this package builds ONNX, which requires Python
   - "Python-system:(?!slc.*|ubuntu)"
 
-#!/bin/bash
+#!/bin/bash -e
 # Ensure installation directory exists
 mkdir -p $INSTALLROOT
 
