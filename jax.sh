@@ -2,7 +2,7 @@ package: JAX
 version: "%(tag_basename)s"
 tag: v0.4.30
 source: https://github.com/google/jax
-requires:
+build_requires:
 - alibuild-recipe-tools
 
 
