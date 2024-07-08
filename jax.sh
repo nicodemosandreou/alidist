@@ -5,7 +5,7 @@ source: https://github.com/google/jax
 
 build_requires:
   - alibuild-recipe-tools
-  - "Python:(slc|ubuntu)"  # this package builds ONNX, which requires Python
+  - "Python:(slc|ubuntu)"  
   - "Python-system:(?!slc.*|ubuntu)"
 
 #!/bin/bash -e
