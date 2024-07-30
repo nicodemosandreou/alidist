@@ -210,8 +210,7 @@ cmake $SOURCEDIR -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                            
       ${CLANG_REVISION:+-DCLANG_EXECUTABLE="$CLANG_ROOT/bin-safe/clang"}                                  \
       ${CLANG_REVISION:+-DLLVM_LINK_EXECUTABLE="$CLANG_ROOT/bin/llvm-link"}                               \
       ${ITSRESPONSE_ROOT:+-DITSRESPONSE=${ITSRESPONSE_ROOT}}
-      ${JAX_ROOT:+-DJAX_ROOT=${JAX_ROOT}}                                                                 \
-      -DUSE_JAX=ON
+     
 # LLVM_ROOT is required for Gandiva
 
 cmake --build . -- ${JOBS+-j $JOBS} install
@@ -268,6 +267,7 @@ module load BASE/1.0 \\
             ${ONNXRUNTIME_REVISION:+ONNXRuntime/$ONNXRUNTIME_VERSION-$ONNXRUNTIME_REVISION}         \\
             ${RAPIDJSON_REVISION:+RapidJSON/$RAPIDJSON_VERSION-$RAPIDJSON_REVISION}                 \\
             ${MLMODELS_REVISION:+MLModels/$MLMODELS_VERSION-$MLMODELS_REVISION}
+            ${JAX_REVISION:+JAX/$JAX_VERSION-$JAX_REVISION
 # Our environment
 set O2_ROOT \$::env(BASEDIR)/$PKGNAME/\$version
 setenv O2_ROOT \$O2_ROOT
@@ -280,6 +280,7 @@ prepend-path ROOT_DYN_PATH \$O2_ROOT/lib
 $([[ ${ARCHITECTURE:0:3} == osx && ! $BOOST_VERSION ]] && echo "prepend-path ROOT_INCLUDE_PATH $BOOST_ROOT/include")
 prepend-path ROOT_INCLUDE_PATH \$O2_ROOT/include/GPU
 prepend-path ROOT_INCLUDE_PATH \$O2_ROOT/include
+prepend-path PYTHONPATH \$::env(JAX_ROOT)/lib/python3.8/site-packages
 
 # JAX environment
 setenv JAX_ROOT \$::env(BASEDIR)/JAX/\$::env(JAX_VERSION)-\$::env(JAX_REVISION)
