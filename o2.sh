@@ -29,6 +29,7 @@ requires:
   - MLModels
   - KFParticle
   - RapidJSON
+  -JAX
 build_requires:
   - abseil
   - GMP
@@ -42,6 +43,7 @@ env:
   VMCWORKDIR: "$O2_ROOT/share"
 prepend_path:
   ROOT_INCLUDE_PATH: "$O2_ROOT/include:$O2_ROOT/include/GPU"
+  PYTHONPATH: "$JAX_ROOT/lib/python3.8/site-packages"  # Added PYTHONPATH for JAX
 incremental_recipe: |
   unset DYLD_LIBRARY_PATH
   if [[ ! $CMAKE_GENERATOR && $DISABLE_NINJA != 1 && $DEVEL_SOURCES != $SOURCEDIR ]]; then
@@ -136,6 +138,8 @@ valid_defaults:
 ---
 #!/bin/sh
 export ROOTSYS=$ROOT_ROOT
+export JAX_ROOT=$JAX_ROOT
+export PYTHONPATH=$JAX_ROOT/lib/python3.8/site-packages:$PYTHONPATH
 
 # Making sure people do not have SIMPATH set when they build fairroot.
 # Unfortunately SIMPATH seems to be hardcoded in a bunch of places in
@@ -206,6 +210,8 @@ cmake $SOURCEDIR -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                            
       ${CLANG_REVISION:+-DCLANG_EXECUTABLE="$CLANG_ROOT/bin-safe/clang"}                                  \
       ${CLANG_REVISION:+-DLLVM_LINK_EXECUTABLE="$CLANG_ROOT/bin/llvm-link"}                               \
       ${ITSRESPONSE_ROOT:+-DITSRESPONSE=${ITSRESPONSE_ROOT}}
+       ${JAX_ROOT:+-DJAX_ROOT=${JAX_ROOT}}                                                                 \
+      -DUSE_JAX=ON
 # LLVM_ROOT is required for Gandiva
 
 cmake --build . -- ${JOBS+-j $JOBS} install
@@ -274,6 +280,10 @@ prepend-path ROOT_DYN_PATH \$O2_ROOT/lib
 $([[ ${ARCHITECTURE:0:3} == osx && ! $BOOST_VERSION ]] && echo "prepend-path ROOT_INCLUDE_PATH $BOOST_ROOT/include")
 prepend-path ROOT_INCLUDE_PATH \$O2_ROOT/include/GPU
 prepend-path ROOT_INCLUDE_PATH \$O2_ROOT/include
+
+# JAX environment
+setenv JAX_ROOT \$::env(BASEDIR)/JAX/\$::env(JAX_VERSION)-\$::env(JAX_REVISION)
+prepend-path PYTHONPATH \$::env(JAX_ROOT)/lib/python3.8/site-packages
 EoF
 mkdir -p $INSTALLROOT/etc/modulefiles && rsync -a --delete etc/modulefiles/ $INSTALLROOT/etc/modulefiles
 
