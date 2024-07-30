@@ -29,7 +29,7 @@ requires:
   - MLModels
   - KFParticle
   - RapidJSON
-  -JAX
+  - JAX
 build_requires:
   - abseil
   - GMP
