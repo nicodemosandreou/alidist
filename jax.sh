@@ -6,8 +6,6 @@ version: "0.4.30"  # Adjust this to the desired JAX version
 source: https://github.com/google/jax
 requires:
   - Python
-  
-
 build_requires:
   - CMake
   - alibuild-recipe-tools
@@ -47,6 +45,12 @@ pip install wheel
 
 # Install JAX with ROCm support
 pip install --upgrade "jax[rocm]" -f https://storage.googleapis.com/jax-releases/jax_rocm_releases.html
+
+# Check if JAX installation succeeded
+if [ $? -ne 0 ]; then
+    echo "JAX installation failed"
+    exit 1
+fi
 
 # Install additional dependencies
 pip install numpy scipy
