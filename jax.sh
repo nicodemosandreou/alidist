@@ -2,7 +2,7 @@
 
 # Package information
 package: JAX
-version: "0.4.10"  # Adjust this to the desired JAX version
+version: "0.4.30"  # Adjust this to the desired JAX version
 source: https://github.com/google/jax
 requires:
   - Python
