@@ -210,7 +210,7 @@ cmake $SOURCEDIR -DCMAKE_INSTALL_PREFIX=$INSTALLROOT                            
       ${CLANG_REVISION:+-DCLANG_EXECUTABLE="$CLANG_ROOT/bin-safe/clang"}                                  \
       ${CLANG_REVISION:+-DLLVM_LINK_EXECUTABLE="$CLANG_ROOT/bin/llvm-link"}                               \
       ${ITSRESPONSE_ROOT:+-DITSRESPONSE=${ITSRESPONSE_ROOT}}
-       ${JAX_ROOT:+-DJAX_ROOT=${JAX_ROOT}}                                                                 \
+      ${JAX_ROOT:+-DJAX_ROOT=${JAX_ROOT}}                                                                 \
       -DUSE_JAX=ON
 # LLVM_ROOT is required for Gandiva
 
