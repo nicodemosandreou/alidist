@@ -6,8 +6,7 @@ version: "0.4.10"  # Adjust this to the desired JAX version
 source: https://github.com/google/jax
 requires:
   - Python
-  - numpy
-  - scipy
+  
 
 build_requires:
   - CMake
