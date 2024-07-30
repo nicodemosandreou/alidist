@@ -25,7 +25,7 @@ requires:
   - cgal
   - VecGeom
   - FFTW3
-  - ONNXRuntime
+  
   - MLModels
   - KFParticle
   - RapidJSON
